@@ -113,9 +113,11 @@
                             </li>
                             @endif
 
+							@if(session()->has('mnuMachOrderCapacity'))
                             <li id='MachOrderCapacity'>
                                 <a href="{{ url('MachOrderCapacity') }}">Mach. Order Capacity</a>
                             </li>
+							@endif
 
                             @if(session()->has('mnuPerformanceAnalysis'))
                             <li id='PerformanceAnalysis'>

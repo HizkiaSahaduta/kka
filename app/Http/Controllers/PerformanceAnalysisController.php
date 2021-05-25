@@ -76,43 +76,46 @@ class PerformanceAnalysisController extends Controller
 
             $result = DB::connection("sqlsrv2")
                         ->select(DB::raw("
-                                    SELECT xx.mill_id,xx.Periode, AVG ( NULLIF ( xx.x,- 3000 ))  AS xx, AVG ( NULLIF ( ( xx.y ),- 3000 )) AS yy, AVG ( NULLIF ( ( xx.z ),- 3000 )) AS zz
-                                    FROM
-                                    (
-                                    SELECT
-                                        t1.*,
-                                        t1.stepA AS x,
-                                    CASE  
-                                        WHEN
-                                        t1.stepB = -3000 OR t1.stepA = -3000 THEN -3000 
-                                        ELSE t1.stepB - t1.stepA 
-                                    END AS y,
-                                    CASE        
-                                        WHEN t1.stepC = - 3000 OR t1.stepB = - 3000 THEN -3000 
-                                        ELSE t1.stepC - t1.stepB 
-                                    END AS z 
-                                        FROM
-                                            (
-                                            SELECT mill_id ,Periode, dt_rcv, dtPlan, dtProd, dtShip, CustomerOrderNo, item_num, NamaBarang,
-                                            CASE 
-                                                WHEN qty_order <= qty_plan THEN DATEDIFF( DAY, dt_rcv, dtPlan ) ELSE - 3000 
+                        SELECT xx.mill_id,xx.Periode,
+                        CONVERT(DECIMAL(10,2), CONVERT(DECIMAL, SUM(NULLIF(xx.x,- 3000)))  / CONVERT(DECIMAL, COUNT(NULLIF(xx.x,- 3000)))) as xx,
+                        CONVERT(DECIMAL(10,2), CONVERT(DECIMAL, SUM(NULLIF(xx.y,- 3000)))  / CONVERT(DECIMAL, COUNT(NULLIF(xx.y,- 3000)))) as yy,
+                        CONVERT(DECIMAL(10,2), CONVERT(DECIMAL, SUM(NULLIF(xx.z,- 3000)))  / CONVERT(DECIMAL, COUNT(NULLIF(xx.z,- 3000)))) as zz
+                        FROM
+                        (
+                        SELECT
+                                t1.*,
+                                t1.stepA AS x,
+                        CASE  
+                                WHEN
+                                t1.stepB = -3000 OR t1.stepA = -3000 THEN -3000 
+                                ELSE t1.stepB - t1.stepA 
+                        END AS y,
+                        CASE        
+                                WHEN t1.stepC = -3000 OR t1.stepB = -3000 THEN -3000 
+                                ELSE t1.stepC - t1.stepB 
+                        END AS z 
+                                FROM
+                                        (
+                                        SELECT mill_id ,Periode, dt_rcv, dtPlan, dtProd, dtShip, CustomerOrderNo, item_num, NamaBarang,
+                                        CASE 
+                                                WHEN qty_order <= qty_plan THEN DATEDIFF( DAY, dt_rcv, dtPlan ) ELSE -3000 
                                                 END AS stepA,
-                                            CASE
-                                                    
-                                                WHEN qty_order > qty_plan THEN- 3000 
+                                        CASE
+                                                        
+                                                WHEN qty_order > qty_plan THEN -3000 
                                                 WHEN qty_order <= qty_prod THEN DATEDIFF( DAY, dt_rcv, dtProd ) 
                                                 WHEN qty_order > qty_prod AND qty_order <= qty_Ship THEN DATEDIFF( DAY, dt_rcv, dtPlan ) 
-                                                ELSE - 3000 
-                                            END AS stepB,
-                                            CASE
-                                                        
-                                                WHEN qty_order > qty_plan THEN - 3000 
-                                                WHEN qty_order <= qty_Ship THEN DATEDIFF( DAY, dt_rcv, dtShip ) ELSE - 3000 
-                                            END AS stepC 
-                                            FROM View_wh_perform $where ) t1 
-                                            ) xx 
-                                            GROUP BY xx.mill_id, xx.Periode 
-                                            ORDER BY xx.Periode"));
+                                                ELSE -3000 
+                                        END AS stepB,
+                                        CASE
+                                                                
+                                                WHEN qty_order > qty_plan THEN -3000 
+                                                WHEN qty_order <= qty_Ship THEN DATEDIFF( DAY, dt_rcv, dtShip ) ELSE -3000 
+                                        END AS stepC 
+                                        FROM View_wh_perform $where) t1 
+                                        ) xx 
+                                        GROUP BY xx.mill_id, xx.Periode 
+                                        ORDER BY xx.Periode"));
             foreach ($result as $results) {
                 $mill = $results->mill_id;
                 $periode = $results->Periode;
@@ -152,7 +155,10 @@ class PerformanceAnalysisController extends Controller
         $result = DB::connection("sqlsrv2")
                     ->select(DB::raw("
                             SELECT
-                            xx.mill_id, FORMAT(xx.dt_rcv, 'dd MMM yyyy') as dt_rcv, AVG ( NULLIF ( xx.x, -3000 ))  AS xx, AVG ( NULLIF ( ( xx.y ), -3000 )) AS yy, AVG ( NULLIF ( ( xx.z ), -3000 )) AS zz
+                            xx.mill_id, FORMAT(xx.dt_rcv, 'dd MMM yyyy') as dt_rcv,
+                            CONVERT(DECIMAL(10,2), CONVERT(DECIMAL, SUM(NULLIF(xx.x,- 3000)))  / CONVERT(DECIMAL, COUNT(NULLIF(xx.x,- 3000)))) as xx,
+                            CONVERT(DECIMAL(10,2), CONVERT(DECIMAL, SUM(NULLIF(xx.y,- 3000)))  / CONVERT(DECIMAL, COUNT(NULLIF(xx.y,- 3000)))) as yy,
+                            CONVERT(DECIMAL(10,2), CONVERT(DECIMAL, SUM(NULLIF(xx.z,- 3000)))  / CONVERT(DECIMAL, COUNT(NULLIF(xx.z,- 3000)))) as zz
                             FROM
                                 (
                                 SELECT
@@ -258,6 +264,19 @@ class PerformanceAnalysisController extends Controller
                                 order by t1.CustomerOrderNo,  t1.item_num"));
             
         return \DataTables::of($result)
+        ->editColumn('x', function ($data) {
+            if ($data->x == -3000) return 'N/A';
+            return $data->x;
+        })
+        ->editColumn('y', function ($data) {
+            if ($data->y == -3000) return 'N/A';
+            return $data->y;
+        })
+        ->editColumn('z', function ($data) {
+            if ($data->z == -3000) return 'N/A';
+            return $data->z;
+        })
+        ->rawColumns(['x', 'y', 'z'])
         ->make(true);
 
 

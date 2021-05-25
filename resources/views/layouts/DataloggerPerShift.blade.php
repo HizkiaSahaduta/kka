@@ -539,7 +539,7 @@ function populateTableDetail(date, shift, id)
             { data: 'shift', name: 'shift', orderable:false },
             { data: 'jumlah', name: 'jumlah', className: "text-right", render: $.fn.dataTable.render.number(',', '.', 0, ''), orderable:false },
             { data: 'panjang', name: 'panjang', className: "text-right", render: $.fn.dataTable.render.number(',', '.', 0, ''), orderable:false },
-            { data: 'total_panjang', name: 'total_panjang', className: "text-right", render: $.fn.dataTable.render.number(',', '.', 0, ''), orderable:false }
+            { data: 'total_panjang', name: 'total_panjang', className: "text-right", render: $.fn.dataTable.render.number(',', '.', 2, ''), orderable:false }
         ],
         initComplete: function(settings, json) {
             

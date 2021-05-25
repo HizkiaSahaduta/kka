@@ -17,7 +17,7 @@ class JSONController extends Controller
 
         if (Session::has('MILLID')){
 
-            $result = DB::connection('sqlsrv3')
+            $result = DB::connection('sqlsrv2')
                             ->table('mill')
                             ->selectRaw('LTRIM(RTRIM(mill_id)) as mill_id, LTRIM(RTRIM(mill_name)) as mill_name')
                             ->where('mill_id', '=', Session::get('MILLID'))
@@ -29,7 +29,7 @@ class JSONController extends Controller
         }
         else {
 
-            $result = DB::connection('sqlsrv3')
+            $result = DB::connection('sqlsrv2')
                             ->table('mill')
                             ->selectRaw('LTRIM(RTRIM(mill_id)) as mill_id, LTRIM(RTRIM(mill_name)) as mill_name')
                             ->where('active_flag', '=', 'Y')
