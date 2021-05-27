@@ -115,6 +115,12 @@ Route::get('searchSP', 'JSONController@searchSP');
 Route::get('listItemDescr/txtSP={txtSP}', 'JSONController@listItemDescr');
 Route::get('listSP/txtMill={txtMill}', 'JSONController@listSP');
 
+// JSON Purchase
+Route::get('DefListOffice', 'JSONController@DefListOffice');
+Route::get('DefListUser', 'JSONController@DefListUser');
+Route::get('ListOfficeUser/id={id}', 'JSONController@ListOfficeUser');
+Route::get('ListUserOffice/id={id}', 'JSONController@ListUserOffice');
+
 //-- DownTime Analysis
 Route::get('DowntimeAnalysis', 'DownTimeController@index')->name('DowntimeAnalysis');
 Route::post('chartDownTime', 'DownTimeController@chartDownTime');
@@ -212,3 +218,8 @@ Route::get('PerformanceAnalysis', 'PerformanceAnalysisController@index')->name('
 Route::post('chartPerformanceAnalysis', 'PerformanceAnalysisController@chartPerformanceAnalysis');
 Route::post('chartPerformanceAnalysisDailySum', 'PerformanceAnalysisController@chartPerformanceAnalysisDailySum');
 Route::post('detailPerformanceAnalysisDaily', 'PerformanceAnalysisController@detailPerformanceAnalysisDaily');
+
+//--Purchase Analysis
+Route::get('PurchaseAnalysis', 'PurchaseAnalysisController@index')->name('PurchaseAnalysis');
+Route::post('chartPurchaseAnalysis', 'PurchaseAnalysisController@chartPurchaseAnalysis')->name('chartPurchaseAnalysis');
+Route::post('getPurchaseAnalysisDetail', 'PurchaseAnalysisController@getPurchaseAnalysisDetail')->name('getPurchaseAnalysisDetail');

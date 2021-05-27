@@ -520,6 +520,48 @@ class JSONController extends Controller
 
     }
 
+    // Purchase Analysis
+
+    public function DefListOffice(){
+
+        $result = DB::connection("sqlsrv2")
+                    ->select(DB::raw("select dept_id, ltrim(rtrim(descr_depart)) as descr_depart from view_pr_performa
+                    group by dept_id, descr_depart ORDER BY dept_id"));
+
+        return response()->json($result);
+
+    }
+
+    public function DefListUser(){
+
+        $result = DB::connection("sqlsrv2")
+                    ->select(DB::raw("select upper(ltrim(rtrim(user_id))) as user_id from view_pr_performa
+                    group by user_id ORDER BY user_id"));
+
+        return response()->json($result);
+
+    }
+
+    public function ListOfficeUser($id) {
+
+        $result = DB::connection("sqlsrv2")
+                    ->select(DB::raw("select dept_id, ltrim(rtrim(descr_depart)) as descr_depart from view_pr_performa where user_id = '$id'
+                    group by dept_id, descr_depart ORDER BY dept_id"));
+
+        return response()->json($result);
+
+    }
+
+    public function ListUserOffice($id) {
+
+        $result = DB::connection("sqlsrv2")
+                    ->select(DB::raw("select upper(ltrim(rtrim(user_id))) as user_id from view_pr_performa where dept_id = '$id' 
+                    group by user_id ORDER BY user_id"));
+
+        return response()->json($result);
+        
+    }
+
 
 
 

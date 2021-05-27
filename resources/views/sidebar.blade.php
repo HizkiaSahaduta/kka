@@ -125,6 +125,12 @@
                             </li>
                             @endif
 
+                            @if(session()->has('mnuPurchaseAnalysis'))
+                            <li id='PurchaseAnalysis'>
+                                <a href="{{ url('PurchaseAnalysis') }}">Purchase Analysis</a>
+                            </li>
+                            @endif 
+
                         </ul>
                     </li>
 
