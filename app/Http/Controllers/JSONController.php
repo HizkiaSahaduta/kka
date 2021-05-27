@@ -525,7 +525,7 @@ class JSONController extends Controller
     public function DefListOffice(){
 
         $result = DB::connection("sqlsrv2")
-                    ->select(DB::raw("select dept_id, ltrim(rtrim(descr_depart)) as descr_depart from view_pr_performa
+                    ->select(DB::raw("select dept_id, ltrim(rtrim(descr_depart)) as descr_depart from view_pr_performa where dept_id is not null
                     group by dept_id, descr_depart ORDER BY dept_id"));
 
         return response()->json($result);
@@ -545,7 +545,7 @@ class JSONController extends Controller
     public function ListOfficeUser($id) {
 
         $result = DB::connection("sqlsrv2")
-                    ->select(DB::raw("select dept_id, ltrim(rtrim(descr_depart)) as descr_depart from view_pr_performa where user_id = '$id'
+                    ->select(DB::raw("select dept_id, ltrim(rtrim(descr_depart)) as descr_depart from view_pr_performa where user_id = '$id' and dept_id is not null
                     group by dept_id, descr_depart ORDER BY dept_id"));
 
         return response()->json($result);
